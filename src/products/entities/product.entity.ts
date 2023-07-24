@@ -3,8 +3,10 @@ import {
   BeforeUpdate,
   Column,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { ProductImage } from './productImage.entity';
 
 @Entity()
 export class Product {
@@ -17,6 +19,11 @@ export class Product {
   @Column('text', { array: true }) size: string[];
   @Column('text') sex: string;
   @Column('text', { array: true, default: [] }) tags: string[];
+  // * one to many relation:
+  @OneToMany(() => ProductImage, (productImage) => productImage.product, {
+    cascade: true,
+  })
+  images?: ProductImage;
 
   // ! METHODS before db insertion:
   @BeforeInsert()
