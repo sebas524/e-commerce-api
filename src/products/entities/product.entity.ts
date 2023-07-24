@@ -22,8 +22,10 @@ export class Product {
   // * one to many relation:
   @OneToMany(() => ProductImage, (productImage) => productImage.product, {
     cascade: true,
+    // * eager (will load images everytime we use a find method):
+    eager: true,
   })
-  images?: ProductImage;
+  images?: ProductImage[];
 
   // ! METHODS before db insertion:
   @BeforeInsert()
