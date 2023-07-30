@@ -8,23 +8,39 @@ import {
 } from 'typeorm';
 import { ProductImage } from './productImage.entity';
 
-@Entity()
+@Entity({ name: 'products' })
 export class Product {
-  @PrimaryGeneratedColumn('uuid') id: string;
-  @Column('text', { unique: true }) title: string;
-  @Column('float', { default: 0 }) price: number;
-  @Column('text', { nullable: true }) description: string;
-  @Column('text', { unique: true }) slug: string;
-  @Column('int', { default: 0 }) stock: number;
-  @Column('text', { array: true }) size: string[];
-  @Column('text') sex: string;
-  @Column('text', { array: true, default: [] }) tags: string[];
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+  @Column('text', { unique: true })
+  title: string;
+  @Column('float', { default: 0 })
+  price: number;
+  @Column('text', { nullable: true })
+  description: string;
+  @Column('text', { unique: true })
+  slug: string;
+  @Column('int', { default: 0 })
+  stock: number;
+  @Column('text', { array: true })
+  size: string[];
+  @Column('text')
+  sex: string;
+  @Column('text', { array: true, default: [] })
+  tags: string[];
   // * one to many relation:
-  @OneToMany(() => ProductImage, (productImage) => productImage.product, {
-    cascade: true,
-    // * eager (will load images everytime we use a find method):
-    eager: true,
-  })
+  @OneToMany(
+    () =>
+      // * will return:
+      ProductImage,
+    // * how does product image relate with our table?:
+    (productImage) => productImage.product,
+    {
+      cascade: true,
+      // * eager (will load images everytime we use a find method):
+      eager: true,
+    },
+  )
   images?: ProductImage[];
 
   // ! METHODS before db insertion:

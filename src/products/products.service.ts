@@ -13,6 +13,7 @@ import { DataSource, Repository } from 'typeorm';
 import { PaginationDto } from 'src/shared/dto/pagination.dto';
 import { validate as isUUID } from 'uuid';
 import { ProductImage } from './entities/productImage.entity';
+import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 
 @Injectable()
 export class ProductsService {
@@ -73,7 +74,6 @@ export class ProductsService {
     if (isUUID(query)) {
       foundProduct = await this.productRepository.findOneBy({ id: query });
     } else {
-      // foundProduct = await this.productRepository.findOneBy({ slug: query });
       const queryBuilder = this.productRepository.createQueryBuilder('prod');
       foundProduct = await queryBuilder
         .where('UPPER(title) =:title or slug =:slug', {
@@ -155,9 +155,21 @@ export class ProductsService {
   }
 
   async remove(id: string) {
-    const productToDelete = await this.productRepository.delete({ id });
-    if (!productToDelete) {
+    const productFound = await this.findOne(id);
+    await this.productRepository.delete(productFound.id);
+
+    if (!productFound) {
       throw new NotFoundException(`Product with id: ${id} not found.`);
+    }
+  }
+
+  async removeAllProducts() {
+    const query = this.productRepository.createQueryBuilder('prod');
+
+    try {
+      return await query.delete().where({}).execute();
+    } catch (error) {
+      this.myExceptionHandler(error);
     }
   }
 

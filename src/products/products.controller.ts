@@ -12,7 +12,6 @@ import {
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { UUID } from 'typeorm/driver/mongodb/bson.typings';
 import { PaginationDto } from 'src/shared/dto/pagination.dto';
 
 @Controller('products')

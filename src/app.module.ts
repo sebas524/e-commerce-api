@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductsModule } from './products/products.module';
 import { SharedModule } from './shared/shared.module';
+import { SeedModule } from './seed/seed.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { SharedModule } from './shared/shared.module';
     }),
     ProductsModule,
     SharedModule,
+    SeedModule,
   ],
   controllers: [],
   providers: [],

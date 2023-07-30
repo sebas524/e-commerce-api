@@ -1,10 +1,21 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Product } from './product.entity';
 
-@Entity()
+@Entity({ name: 'products_images' })
 export class ProductImage {
-  @PrimaryGeneratedColumn('uuid') id: number;
-  @Column('text') url: string;
+  @PrimaryGeneratedColumn('uuid')
+  id: number;
+  @Column('text')
+  url: string;
   //   * many to one relation:
-  @ManyToOne(() => Product, (product) => product.images) product: Product;
+  @ManyToOne(
+    () =>
+      // * will return:
+      Product,
+    // * how does it relate with our table?:
+    (product) => product.images,
+    // * so that when deleting product, images delete as well:
+    { onDelete: 'CASCADE' },
+  )
+  product: Product;
 }

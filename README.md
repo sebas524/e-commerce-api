@@ -11,3 +11,4 @@
 3. clone .env.template and rename to .env and set your own variables
 4. run `docker-compose up -d`
 5. run `yarn start:dev`
+6. run seed for preset data `http://localhost:3000/api/seed`
