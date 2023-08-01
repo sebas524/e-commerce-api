@@ -6,7 +6,11 @@ export class User {
   id: string;
   @Column('text', { unique: true })
   email: string;
-  @Column('text')
+
+  @Column('text', {
+    // * so password doesnt appear in response:
+    select: false,
+  })
   password: string;
   @Column('text')
   name: string;
