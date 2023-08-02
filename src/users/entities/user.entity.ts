@@ -1,4 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity({ name: 'users' })
 export class User {
@@ -19,4 +25,14 @@ export class User {
   //   * we dont want to delete users, we just make them inactive so thats why we create this column as well:
   @Column('boolean', { default: true })
   isActive: boolean;
+
+  @BeforeInsert()
+  checkEmail() {
+    this.email = this.email.toLowerCase().trim();
+  }
+  @BeforeUpdate()
+  doubleCheckEmail() {
+    // * in case email is changed:
+    this.checkEmail();
+  }
 }

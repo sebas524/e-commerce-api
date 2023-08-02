@@ -10,10 +10,13 @@ import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { LoginUserDto } from './dto/login-user.dto';
+import { JwtPayload } from './interfaces/jtw-payload.interface';
+import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    private readonly jwtService: JwtService,
   ) {}
 
   // ! error handler:
@@ -28,6 +31,11 @@ export class UsersService {
   }
   // ! ---
 
+  private getJwt(payload: JwtPayload) {
+    const token = this.jwtService.sign(payload);
+    return token;
+  }
+
   async create(createUserDto: CreateUserDto) {
     try {
       const { password, ...restOfUserData } = createUserDto;
@@ -41,7 +49,7 @@ export class UsersService {
       const savedUser = await this.userRepository.save(newUser);
       // * now, so we dont return a password:
       delete savedUser.password;
-      return savedUser;
+      return { ...savedUser, token: this.getJwt({ email: savedUser.email }) };
       // todo: JSON ACCESS WEB TOKEN
     } catch (error) {
       this.errorHandler(error);
@@ -68,7 +76,7 @@ export class UsersService {
       throw new UnauthorizedException('Invalid password credential.');
     }
 
-    return foundUser;
+    return { ...foundUser, token: this.getJwt({ email: foundUser.email }) };
   }
 
   findAll() {
