@@ -23,10 +23,10 @@ export class jwtStrategy extends PassportStrategy(Strategy) {
 
   // * when i get a jwt that is valid in terms of expery date  and the signature with payload match, then we can receive the payload and validate it as i please:
   async validate(payload: JwtPayload): Promise<User> {
-    const { email } = payload;
+    const { id } = payload;
 
     const foundUser = await this.userRepository.findOneBy(
-      { email },
+      { id },
       // * remember you dont need password because user is already identified(that's why he's receiving token)
     );
 
@@ -37,6 +37,8 @@ export class jwtStrategy extends PassportStrategy(Strategy) {
     if (!foundUser.isActive) {
       throw new UnauthorizedException('Inactive user...');
     }
+
+    console.log({ foundUser });
 
     return foundUser;
     // * this will be added to the request.

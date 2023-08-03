@@ -49,7 +49,7 @@ export class UsersService {
       const savedUser = await this.userRepository.save(newUser);
       // * now, so we dont return a password:
       delete savedUser.password;
-      return { ...savedUser, token: this.getJwt({ email: savedUser.email }) };
+      return { ...savedUser, token: this.getJwt({ id: savedUser.id }) };
       // todo: JSON ACCESS WEB TOKEN
     } catch (error) {
       this.errorHandler(error);
@@ -64,6 +64,7 @@ export class UsersService {
         email: true,
         // * so password appears:
         password: true,
+        id: true,
       },
     });
 
@@ -76,7 +77,7 @@ export class UsersService {
       throw new UnauthorizedException('Invalid password credential.');
     }
 
-    return { ...foundUser, token: this.getJwt({ email: foundUser.email }) };
+    return { ...foundUser, token: this.getJwt({ id: foundUser.id }) };
   }
 
   findAll() {
