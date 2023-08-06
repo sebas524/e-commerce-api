@@ -1,8 +1,10 @@
+import { Product } from 'src/products/entities/product.entity';
 import {
   BeforeInsert,
   BeforeUpdate,
   Column,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -25,6 +27,16 @@ export class User {
   //   * we dont want to delete users, we just make them inactive so thats why we create this column as well:
   @Column('boolean', { default: true })
   isActive: boolean;
+
+  @OneToMany(
+    () => {
+      return Product;
+    },
+    (product) => {
+      product.user;
+    },
+  )
+  product: Product;
 
   @BeforeInsert()
   checkEmail() {

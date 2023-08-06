@@ -6,11 +6,11 @@ import { User } from './entities/user.entity';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { jwtStrategy } from './strategies/jwt.strategy';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
   controllers: [UsersController],
-  providers: [UsersService, jwtStrategy],
+  providers: [UsersService, JwtStrategy],
   imports: [
     ConfigModule,
     TypeOrmModule.forFeature([User]),
@@ -34,6 +34,6 @@ import { jwtStrategy } from './strategies/jwt.strategy';
     //   signOptions: { expiresIn: '1h' },
     // }),
   ],
-  exports: [TypeOrmModule, jwtStrategy, PassportModule, JwtModule],
+  exports: [TypeOrmModule, JwtStrategy, PassportModule, JwtModule],
 })
 export class UsersModule {}

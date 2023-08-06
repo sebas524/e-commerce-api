@@ -13,7 +13,8 @@ import { DataSource, Repository } from 'typeorm';
 import { PaginationDto } from 'src/shared/dto/pagination.dto';
 import { validate as isUUID } from 'uuid';
 import { ProductImage } from './entities/productImage.entity';
-import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
+
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class ProductsService {
@@ -29,7 +30,7 @@ export class ProductsService {
     private readonly dataSource: DataSource,
   ) {}
 
-  async create(createProductDto: CreateProductDto) {
+  async create(createProductDto: CreateProductDto, user: User) {
     try {
       const { images = [], ...restOfProps } = createProductDto;
 
@@ -39,6 +40,7 @@ export class ProductsService {
         images: images.map((image) => {
           return this.productImageRepository.create({ url: image });
         }),
+        user: user,
       });
       // * SAVE:
       const savedProduct = await this.productRepository.save(newProduct);
@@ -95,7 +97,7 @@ export class ProductsService {
     };
   }
 
-  async update(id: string, updateProductDto: UpdateProductDto) {
+  async update(id: string, updateProductDto: UpdateProductDto, user: User) {
     const { images, ...restOfProps } = updateProductDto;
 
     const foundproduct = await this.productRepository.preload({
@@ -130,6 +132,9 @@ export class ProductsService {
           product: { id: id },
         });
       }
+
+      foundproduct.user = user;
+
       // * up till now, nothing has changed in db. we need to save it:
       await queryRunner.manager.save(foundproduct);
 

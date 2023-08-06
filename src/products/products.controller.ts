@@ -13,14 +13,19 @@ import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { PaginationDto } from 'src/shared/dto/pagination.dto';
+import { AuthDeco } from 'src/users/decorators/authDeco.decorator';
+import { PermittedRoles } from 'src/users/interfaces/permitted-roles.enum';
+import { UserDeco } from 'src/users/decorators/get-user.decorator';
+import { User } from 'src/users/entities/user.entity';
 
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
-  create(@Body() createProductDto: CreateProductDto) {
-    return this.productsService.create(createProductDto);
+  @AuthDeco()
+  create(@Body() createProductDto: CreateProductDto, @UserDeco() user: User) {
+    return this.productsService.create(createProductDto, user);
   }
 
   @Get()
@@ -36,14 +41,17 @@ export class ProductsController {
   }
 
   @Patch(':id')
+  @AuthDeco(PermittedRoles.admin)
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateProductDto: UpdateProductDto,
+    @UserDeco() user: User,
   ) {
-    return this.productsService.update(id, updateProductDto);
+    return this.productsService.update(id, updateProductDto, user);
   }
 
   @Delete(':id')
+  @AuthDeco(PermittedRoles.admin)
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.productsService.remove(id);
   }
