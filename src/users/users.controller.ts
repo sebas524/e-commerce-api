@@ -36,6 +36,12 @@ export class UsersController {
     return this.usersService.login(loginUserDto);
   }
 
+  @Get('authStatus')
+  @AuthDeco()
+  authStatusChecker(@UserDeco() user: User) {
+    return this.usersService.authStatusChecker(user);
+  }
+
   // ! PRIVATE ROUTE
   @Get('private')
   @UseGuards(AuthGuard())

@@ -36,6 +36,13 @@ export class UsersService {
     return token;
   }
 
+  async authStatusChecker(user: User) {
+    return {
+      ...user,
+      token: this.getJwt({ id: user.id }),
+    };
+  }
+
   async create(createUserDto: CreateUserDto) {
     try {
       const { password, ...restOfUserData } = createUserDto;
